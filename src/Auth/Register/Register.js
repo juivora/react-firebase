@@ -28,20 +28,23 @@ function Register() {
             setShowAlert(true)
             setAlertColor('red')
             setAlertMessage('Please fill all the fields')
-        } else {
-            if (!validator.isEmail(email)) {
-                setShowAlert(true)
-                setAlertColor('red')
-                setAlertMessage('Please enter valid email')
-            }
-        }
-
-        let register = registerWithEmailAndPassword(name, email, password);
-        if (!register) {
+            return false
+        } else if (!validator.isEmail(email)) {
             setShowAlert(true)
             setAlertColor('red')
-            setAlertMessage(register)
+            setAlertMessage('Please enter valid email')
+            return false
+        } else {
+            let register = registerWithEmailAndPassword(name, email, password);
+            register.then(err => {
+                if (err) {
+                    setShowAlert(true)
+                    setAlertColor('red')
+                    setAlertMessage(err)
+                }
+            })
         }
+
     };
 
     useEffect(() => {
@@ -56,9 +59,11 @@ function Register() {
                 linkName="Login"
                 linkUrl="/"
             />
+
+
             <div className="min-h-full flex items-center justify-center px-4 sm:px-6 lg:px-8">
-                <ToastJs show={showAlert} color={alertColor} message={alertMessage} />
                 <div className="max-w-md w-full space-y-8">
+                    <ToastJs show={showAlert} color={alertColor} message={alertMessage} />
                     <form className="mt-8 space-y-6" method="POST">
                         <input type="hidden" name="remember" defaultValue="true" />
                         <div className="rounded-md shadow-sm -space-y-px">

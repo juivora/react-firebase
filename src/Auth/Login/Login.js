@@ -18,6 +18,7 @@ function Login() {
     const [showAlert, setShowAlert] = useState(false)
     const [alertColor, setAlertColor] = useState('white')
     const [alertMessage, setAlertMessage] = useState('')
+
     const navigate = useNavigate();
 
     useEffect(() => {
@@ -30,6 +31,7 @@ function Login() {
         // eslint-disable-next-line+3
     }, [user, loading]);
 
+
     const handleLoginWithEmail = (e) => {
         e.preventDefault()
         if (email !== "" || password !== "") {
@@ -37,10 +39,18 @@ function Login() {
                 setShowAlert(true)
                 setAlertColor('red')
                 setAlertMessage('Please enter valid email')
+                return false
             } else {
-                logInWithEmailAndPassword(email, password)
-            }
+                let login = logInWithEmailAndPassword(email, password)
+                login.then(err => {
+                    if (err) {
+                        setShowAlert(true)
+                        setAlertColor('red')
+                        setAlertMessage(err)
+                    }
+                })
 
+            }
 
         } else {
             setShowAlert(true)
@@ -58,8 +68,8 @@ function Login() {
                 linkUrl="/register"
             />
             <div className="min-h-full flex items-center justify-center px-4 sm:px-6 lg:px-8">
-                <ToastJs show={showAlert} color={alertColor} message={alertMessage} />
                 <div className="max-w-md w-full space-y-8">
+                    <ToastJs show={showAlert} color={alertColor} message={alertMessage} />
                     <form className="mt-8 space-y-6" method="POST">
                         <input type="hidden" name="remember" defaultValue="true" />
                         <div className="rounded-md shadow-sm -space-y-px">
