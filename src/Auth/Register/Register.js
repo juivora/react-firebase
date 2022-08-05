@@ -46,7 +46,7 @@ function Register() {
 
     useEffect(() => {
         if (loading) return;
-        if (user) navigate('/dashboard', { replace: true })
+        if (user) navigate('/blog', { replace: true })
     }, [user, loading]);
     return (
         <>
