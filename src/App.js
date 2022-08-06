@@ -9,7 +9,7 @@ import Dashboard from "./Dashboard/Dashboard";
 import Header from "./UI/Header";
 import AddBlog from "./Blog/AddBlog";
 import Blogs from "./Blog/Blogs";
-import BlogDetail from "./Blog/BlogDetail";
+import MyBlogs from "./Blog/MyBlogs";
 import Editblog from "./Blog/EditBlog";
 
 function App() {
@@ -27,7 +27,7 @@ function App() {
         <Route exact path="/blog" element={<Blogs />} />
         <Route exact path="/blog/add" element={<AddBlog />} />
         <Route exact path="/blog/edit/:id" element={<Editblog />} />
-        <Route exact path="/blog/{id}" element={<BlogDetail />} />
+        <Route exact path="/myblog" element={<MyBlogs />} />
       </Routes>
     </Router>
 

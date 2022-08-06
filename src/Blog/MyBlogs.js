@@ -1,12 +1,13 @@
+import { onAuthStateChanged } from 'firebase/auth';
 import { collection, deleteDoc, doc, onSnapshot, orderBy, query, where } from 'firebase/firestore'
 import React, { useEffect, useState } from 'react'
 import { useNavigate } from 'react-router-dom';
 import ToastJs from '../Components/ToastJs';
-import { auth, databse, db } from '../firebase'
+import { auth, db } from '../firebase'
 import Modal from '../UI/Modal';
 import SearchBlog from './SearchBlog';
 
-export default function Blogs() {
+export default function MyBlogs() {
     const [id, setId] = useState()
     const [blogs, setBlogs] = useState([])
     const [displayConfirmationModal, setDisplayConfirmationModal] = useState(false);
@@ -17,42 +18,39 @@ export default function Blogs() {
 
     useEffect(() => {
         const blogRef = collection(db, "blogs")
-        const q = query(blogRef, orderBy("createdAt", "desc"))
+
+        let blogs = []
+        let user_id = 0
+        onAuthStateChanged(auth, async (user) => {
+            user_id = user.uid
+            const q = query(blogRef, orderBy("createdAt", "desc"), where("postedBy.id", "==", user_id))
+
+            onSnapshot(q, (snapshot) => {
+                blogs = snapshot.docs.map(doc => ({
+                    id: doc.id,
+                    ...doc.data()
+                }))
+                blogs = blogs.filter(
+                    blog => {
+                        return (
+                            blog
+                                .title
+                                .toLowerCase()
+                                .includes(search.toLowerCase()) ||
+                            blog
+                                .description
+                                .toLowerCase()
+                                .includes(search.toLowerCase())
+                        );
+                    })
+                setBlogs(blogs)
+                console.log(blogs)
+            })
+        });
 
 
-        onSnapshot(q, (snapshot) => {
-            let blogs = snapshot.docs.map(doc => ({
-                id: doc.id,
-                ...doc.data()
-            }))
 
 
-            blogs = blogs.filter(
-                blog => {
-                    return (
-                        blog
-                            .title
-                            .toLowerCase()
-                            .includes(search.toLowerCase()) ||
-                        blog
-                            .description
-                            .toLowerCase()
-                            .includes(search.toLowerCase())
-                    );
-                })
-
-            // blogs.map(blog => {
-            //     const userRef = collection(db, "users")
-            //     const userQ = query(userRef, where('uid', '==', blog.postedBy.id))
-            //     onSnapshot(userQ, (snapshot) => {
-            //         snapshot.docs.map(doc => { blog.userStatus = doc.data().status })
-            //     })
-            // })
-
-
-            setBlogs(blogs)
-            console.log(blogs)
-        })
     }, [search])
 
     const showDeleteModal = (id) => {
@@ -60,6 +58,8 @@ export default function Blogs() {
         setDeleteMessage(`Are you sure you want to delete the blog `);
         setDisplayConfirmationModal(true);
     };
+
+
 
     const submitDelete = () => {
         setBlogs(blogs.filter((blog) => blog.id !== id))
@@ -79,12 +79,12 @@ export default function Blogs() {
     }
 
     return (
-        <div>
+        <>
             <SearchBlog placeholder={'Search Blogs...'} searchValue={searchValue} />
             <div className='relative sm:pb-12 sm:ml-[calc(2rem+1px)] md:ml-[calc(3.5rem+1px)] lg:ml-[max(calc(14.5rem+1px),calc(100%-48rem))]'>
 
                 <div className="hidden absolute top-3 bottom-0 right-full mr-7 md:mr-[3.25rem] w-px bg-slate-200 dark:bg-slate-800 sm:block"></div>
-                <div className="space-y-16" data-testid='bloglist'>
+                <div className="space-y-16">
                     <ToastJs show={showAlert} color="blue" message="Blog deleted successfully" />
                     {
                         blogs.length === 0 ? (
@@ -109,26 +109,20 @@ export default function Blogs() {
                                                 <h3 className="text-base font-semibold tracking-tight text-slate-900 dark:text-slate-200 pt-8 lg:pt-0 basis-4/5">
                                                     {title}
                                                 </h3>
-
-                                                {/* {userStatus == 1 &&
-                                                    <div>
-                                                        <svg className="h-8 w-8 text-green-500" width="24" height="24" viewBox="0 0 24 24" strokeWidth="2" stroke="currentColor" fill="none" strokeLinecap="round" strokeLinejoin="round">  <path stroke="none" d="M0 0h24v24H0z" />  <circle cx="12" cy="12" r="9" /></svg>
-                                                    </div>
-                                                } */}
                                                 {auth.currentUser && postedBy.id == auth.currentUser.uid &&
                                                     (
-                                                        <div data-testid='edit-delete'>
+                                                        <>
                                                             <button className='basis-1/6' onClick={() => showDeleteModal(id)}>
                                                                 <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
                                                                     <path strokeLinecap="round" strokeLinejoin="round" d="M5 8h14M5 8a2 2 0 110-4h14a2 2 0 110 4M5 8v10a2 2 0 002 2h10a2 2 0 002-2V8m-9 4h4" />
                                                                 </svg>
                                                             </button>
                                                             <button className='basis-1/6' onClick={() => editBlog(id)}>
-                                                                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
+                                                                <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
                                                                     <path d="M13.586 3.586a2 2 0 112.828 2.828l-.793.793-2.828-2.828.793-.793zM11.379 5.793L3 14.172V17h2.828l8.38-8.379-2.83-2.828z" />
                                                                 </svg>
                                                             </button>
-                                                        </div>
+                                                        </>
                                                     )}
                                             </div>
 
@@ -147,8 +141,8 @@ export default function Blogs() {
                                         </div>
                                         <span className="flex items-center text-sm text-sky-500 font-medium">
                                             {/* <span className="absolute -inset-y-2.5 -inset-x-4 md:-inset-y-4 md:-inset-x-6 sm:rounded-2xl"></span> */}
-                                            {/* <span className="relative">Read more<span className="sr-only">, Tailwind UI: Site templates and all-access</span>
-                                            </span> */}
+                                            <span className="relative">Read more<span className="sr-only">, Tailwind UI: Site templates and all-access</span>
+                                            </span>
                                             <svg className="relative mt-px overflow-visible ml-2.5 text-sky-300 dark:text-sky-700" width="3" height="6" viewBox="0 0 3 6" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M0 0L3 3L0 6"></path></svg>
                                         </span>
 
@@ -168,6 +162,6 @@ export default function Blogs() {
 
                 </div>
             </div >
-        </div>
+        </>
     )
 }

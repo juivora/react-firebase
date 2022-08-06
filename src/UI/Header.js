@@ -1,17 +1,15 @@
-// import { Link, useNavigate } from "react-router-dom";
-import { logRoles } from "@testing-library/react";
 import { signOut } from "firebase/auth";
 import React, { useEffect, useState } from "react";
 import { useAuthState } from "react-firebase-hooks/auth";
 import { useNavigate } from "react-router-dom";
-import { auth } from "../firebase";
+import { auth, logout } from "../firebase";
 
 function Header() {
     const [user] = useAuthState(auth);
     const navigate = useNavigate()
 
-    const logOut = () => {
-        signOut(auth)
+    const onlogOut = () => {
+        logout()
         navigate('/')
     }
 
@@ -29,6 +27,9 @@ function Header() {
             <div className="text-sm lg:flex-grow">
                 <a href="/blog" className="block mr-3 mt-4 lg:inline-block lg:mt-0 text-teal-200 hover:text-white">
                     Blog
+                </a>
+                <a href="/myblog" className="block mr-3 mt-4 lg:inline-block lg:mt-0 text-teal-200 hover:text-white">
+                    My Blogs
                 </a>
                 {user &&
                     <a href="/blog/add" className="mr-3 block mt-4 lg:inline-block lg:mt-0 text-teal-200 hover:text-white">
@@ -51,7 +52,7 @@ function Header() {
                 (<div>
                     <ul className="flex justify-between">
                         <li className="mr-3">
-                            <button onClick={logOut} className="inline-block text-sm px-4 py-2 leading-none border rounded text-white border-white hover:border-transparent hover:text-teal-500 hover:bg-white mt-4 mr-4 lg:mt-0">Logout</button>
+                            <button onClick={onlogOut} className="inline-block text-sm px-4 py-2 leading-none border rounded text-white border-white hover:border-transparent hover:text-teal-500 hover:bg-white mt-4 mr-4 lg:mt-0">Logout</button>
                         </li>
                     </ul>
                 </div>)

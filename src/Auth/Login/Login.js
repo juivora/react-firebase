@@ -41,14 +41,20 @@ function Login() {
                 setAlertMessage('Please enter valid email')
                 return false
             } else {
-                let login = logInWithEmailAndPassword(email, password)
-                login.then(err => {
-                    if (err) {
-                        setShowAlert(true)
-                        setAlertColor('red')
-                        setAlertMessage(err)
-                    }
-                })
+
+                let login = logInWithEmailAndPassword(email, password, setShowAlert, setAlertMessage)
+                console.log('login', login)
+
+                // login.then(err => {
+                //     console.log('err', err)
+                //     if (err === true) {
+                //         console.log('err', err)
+                //     } else {
+                //         setShowAlert(true)
+                //         setAlertColor('red')
+                //         setAlertMessage(err)
+                //     }
+                // })
 
             }
 

@@ -15,6 +15,10 @@ import {
   collection,
   where,
   addDoc,
+  updateDoc,
+  doc,
+  onSnapshot,
+  setDoc,
 } from "firebase/firestore";
 
 // For Firebase JS SDK v7.20.0 and later, measurementId is optional
@@ -34,7 +38,7 @@ const auth = getAuth(app);
 const db = getFirestore(app);
 const storage = getStorage(app)
 
-// const db = getDatabase(app)
+const databse = getDatabase(app)
 const googleProvider = new GoogleAuthProvider();
 const signInWithGoogle = async (setIsAuth) => {
   try {
@@ -48,6 +52,7 @@ const signInWithGoogle = async (setIsAuth) => {
         name: user.displayName,
         authProvider: "google",
         email: user.email,
+        status: 1
       });
     }
   } catch (err) {
@@ -56,13 +61,28 @@ const signInWithGoogle = async (setIsAuth) => {
   }
 };
 
-const logInWithEmailAndPassword = async (email, password) => {
+const logInWithEmailAndPassword = async (email, password, setShowAlert, setAlertMessage) => {
   try {
-    await signInWithEmailAndPassword(auth, email, password);
-  } catch (err) {
-    console.error(err);
-    return err.message
+    const res = await signInWithEmailAndPassword(auth, email, password)
+    const userRef = collection(db, "users")
+    const q = query(userRef, where("uid", "==", res.user.uid))
+    let id;
+    onSnapshot(q, (snapshot) => {
+      snapshot.docs.map(doc => id = doc.id)
+      const newRef = doc(db, "users", id);
+      updateDoc(newRef, {
+        status: 1
+      })
+    })
   }
+  catch (error) {
+    const errorMessage = error.message;
+    setShowAlert(true)
+    setAlertMessage(errorMessage)
+    alert(errorMessage)
+    return false
+
+  };
 };
 
 const registerWithEmailAndPassword = async (name, email, password) => {
@@ -74,6 +94,7 @@ const registerWithEmailAndPassword = async (name, email, password) => {
       name,
       authProvider: "local",
       email,
+      status: 1
     });
     return true
   } catch (err) {
@@ -93,6 +114,16 @@ const sendPasswordReset = async (email) => {
 };
 
 const logout = () => {
+  const userRef = collection(db, "users")
+  const q = query(userRef, where("uid", "==", auth.currentUser.uid))
+  let id;
+  onSnapshot(q, (snapshot) => {
+    snapshot.docs.map(doc => id = doc.id)
+    const newRef = doc(db, "users", id);
+    updateDoc(newRef, {
+      status: 0
+    })
+  })
   signOut(auth);
 };
 
@@ -100,6 +131,7 @@ const logout = () => {
 export {
   auth,
   db,
+  databse,
   signInWithGoogle,
   logInWithEmailAndPassword,
   registerWithEmailAndPassword,

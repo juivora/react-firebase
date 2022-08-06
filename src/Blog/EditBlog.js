@@ -1,16 +1,14 @@
-import { collection, addDoc, Timestamp, getDoc, doc, updateDoc } from 'firebase/firestore'
-import React, { useDebugValue, useEffect, useState } from "react";
+import { Timestamp, getDoc, doc, updateDoc } from 'firebase/firestore'
+import React, { useEffect, useState } from "react";
 import { storage, db, auth } from '../firebase';
 import { getDownloadURL, ref, uploadBytesResumable } from 'firebase/storage'
 import HeaderPage from '../UI/HeaderPage';
 import ToastJs from '../Components/ToastJs';
-import Modal from '../UI/Modal';
 import { useAuthState } from "react-firebase-hooks/auth";
 import { useNavigate, useParams } from "react-router-dom";
 
 export default function Editblog() {
     const { id } = useParams()
-    const [blog, setBlog] = useState({})
     const [user, loading] = useAuthState(auth);
     const [showAlert, setShowAlert] = useState(false)
     const [newImage, setNewImage] = useState('')
@@ -68,9 +66,20 @@ export default function Editblog() {
         setFormData({ ...formData, imageUrl: e.target.files[0] })
     }
 
-    const handlePublish = () => {
+    const handlePublish = (e) => {
+        e.preventDefault()
+        const regexp = /^\S*$/;
+        const { title, description } = formData;
+        if (!regexp.test(title) || !regexp.test(description)) {
+            setShowAlert(true)
+            setAlertColor('red')
+            setAlertMessage('Please fill all the fields !')
+            return;
+        }
         if (!formData.title || !formData.description || !formData.imageUrl) {
-            alert('Please fill all the fields')
+            setShowAlert(true)
+            setAlertColor('red')
+            setAlertMessage('Please fill all the fields !')
             return;
         }
         if (newImage !== '') {

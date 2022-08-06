@@ -54,18 +54,18 @@ describe("Test the login component", () => {
         expect(password).toHaveProperty('type', 'password')
     })
 
-    test("able to submit the form", () => {
-        const { getByTestId } = render(<BrowserRouter><Login /></BrowserRouter>)
-        const submitBtn = getByTestId("submit")
-        const emailInputNode = screen.getByPlaceholderText('Email address')
-        const passwordInputNode = screen.getByPlaceholderText('Password')
+    // test("able to submit the form", () => {
+    //     const { getByTestId } = render(<BrowserRouter><Login /></BrowserRouter>)
+    //     const submitBtn = getByTestId("submit")
+    //     const emailInputNode = screen.getByPlaceholderText('Email address')
+    //     const passwordInputNode = screen.getByPlaceholderText('Password')
 
-        userEvent.type(emailInputNode, 'jui@gmail.com')
-        userEvent.type(passwordInputNode, '123456')
-        userEvent.click(submitBtn)
+    //     userEvent.type(emailInputNode, 'jui@gmail.com')
+    //     userEvent.type(passwordInputNode, '123456')
+    //     userEvent.click(submitBtn)
 
 
 
-        // expect(emailInputNode.value).toMatch('')
-    })
+    //     // expect(emailInputNode.value).toMatch('')
+    // })
 })

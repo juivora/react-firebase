@@ -1,0 +1,23 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Test the blog list component Check if blogs are loading 1`] = `
+<div
+  class="space-y-16"
+  data-testid="bloglist"
+>
+  <div>
+    <div
+      class="text-sm lg:flex-grow"
+    >
+      <a
+        class="block mt-4 lg:inline-block lg:mt-0 text-black-200 hover:text-black"
+        href="/blog"
+      >
+        <p>
+          No Blogs found
+        </p>
+      </a>
+    </div>
+  </div>
+</div>
+`;

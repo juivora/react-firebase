@@ -23,9 +23,11 @@ function AddBlog() {
         createdAt: Timestamp.now().toDate(),
 
     })
+    const [showAlert, setShowAlert] = useState(false)
+    const [alertColor, setAlertColor] = useState('white')
+    const [alertMessage, setAlertMessage] = useState('')
 
     useEffect(() => {
-        console.log(user?.id)
         if (loading) {
             // maybe trigger a loading screen
             return;
@@ -46,9 +48,20 @@ function AddBlog() {
         setFormData({ ...formData, image: e.target.files[0] })
     }
 
-    const handlePublish = () => {
+    const handlePublish = (e) => {
+        e.preventDefault()
+        const regexp = /^\S*$/;
+        const { title, description } = formData;
+        if (!regexp.test(title) || !regexp.test(description)) {
+            setShowAlert(true)
+            setAlertColor('red')
+            setAlertMessage('Please fill all the fields !')
+            return;
+        }
         if (!formData.title || !formData.description || !formData.image) {
-            alert('Please fill all the fields')
+            setShowAlert(true)
+            setAlertColor('red')
+            setAlertMessage('Please fill all the fields !')
             return;
         }
 
@@ -103,6 +116,7 @@ function AddBlog() {
 
         <div className="min-h-full flex items-center justify-center py-12 px-4 sm:px-6 lg:px-8">
             <div className="max-w-md w-full space-y-8">
+                <ToastJs show={showAlert} color={alertColor} message={alertMessage} />
                 <HeaderPage
                     heading="Add new blog"
 
