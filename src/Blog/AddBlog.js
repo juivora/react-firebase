@@ -45,6 +45,13 @@ function AddBlog() {
     }
 
     const handleImageChange = e => {
+        if (!e.target.files[0].name.match(/\.(jpg|jpeg|png|gif)$/)) {
+            setShowAlert(true)
+            setAlertColor('red')
+            setAlertMessage('select valid image.')
+            e.target.value = null;
+            return false;
+        }
         setFormData({ ...formData, image: e.target.files[0] })
     }
 
@@ -56,13 +63,13 @@ function AddBlog() {
             setShowAlert(true)
             setAlertColor('red')
             setAlertMessage('Please fill all the fields !')
-            return;
+            return false;
         }
         if (!formData.title || !formData.description || !formData.image) {
             setShowAlert(true)
             setAlertColor('red')
             setAlertMessage('Please fill all the fields !')
-            return;
+            return false;
         }
 
         const storageRef = ref(storage, `images/${Date.now()}${formData.image.name}`)
@@ -155,7 +162,7 @@ function AddBlog() {
                     // allows you to reach into your file directory and upload image to the browser
                     type="file"
                     name="image"
-                    accept="image/*"
+                    accept="image/x-png,image/gif,image/jpeg,image/jpg"
                     className="appearance-none rounded-none relative block
                           w-full px-3 py-2 border border-gray-300
                           placeholder-gray-500 text-gray-900 rounded-t-md
