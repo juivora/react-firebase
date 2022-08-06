@@ -57,5 +57,5 @@
     "tailwindcss": "^3.1.6"
   },
   "proxy": "http://localhost:3000",
-  "homepage": "."
+  "homepage": "http://sahajshah.in/"
 }
