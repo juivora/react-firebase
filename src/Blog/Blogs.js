@@ -2,7 +2,7 @@ import { collection, deleteDoc, doc, onSnapshot, orderBy, query, where } from 'f
 import React, { useEffect, useState } from 'react'
 import { useNavigate } from 'react-router-dom';
 import ToastJs from '../Components/ToastJs';
-import { auth, databse, db } from '../firebase'
+import { auth, db } from '../firebase'
 import Modal from '../UI/Modal';
 import SearchBlog from './SearchBlog';
 
@@ -19,12 +19,13 @@ export default function Blogs() {
         const blogRef = collection(db, "blogs")
         const q = query(blogRef, orderBy("createdAt", "desc"))
 
-
         onSnapshot(q, (snapshot) => {
             let blogs = snapshot.docs.map(doc => ({
                 id: doc.id,
+                userStatus: 0,
                 ...doc.data()
             }))
+
 
 
             blogs = blogs.filter(
@@ -41,17 +42,20 @@ export default function Blogs() {
                     );
                 })
 
-            // blogs.map(blog => {
+            // blogs = blogs.filter(blog => {
             //     const userRef = collection(db, "users")
             //     const userQ = query(userRef, where('uid', '==', blog.postedBy.id))
-            //     onSnapshot(userQ, (snapshot) => {
-            //         snapshot.docs.map(doc => { blog.userStatus = doc.data().status })
-            //     })
+            //     return (onSnapshot(userQ, (snapshot) => {
+            //         snapshot.docs.map(doc => {
+            //             return blog.userStatus = doc.data().status
+            //         })
+            //     }))
             // })
 
 
-            setBlogs(blogs)
             console.log(blogs)
+            setBlogs(blogs)
+
         })
     }, [search])
 
@@ -97,8 +101,9 @@ export default function Blogs() {
 
                             </div>
                         ) : (
-                            blogs.map(({ id, title, description, imageUrl, createdAt, postedBy }) => {
+                            blogs.map(({ id, title, description, imageUrl, createdAt, postedBy, userStatus }) => {
                                 return <div key={id} className='mt-3 mr-3'>
+                                    {console.log('userstatus', userStatus)}
                                     <article className="relativse group">
                                         {/* <div className="absolute -inset-y-2.5 -inset-x-4 md:-inset-y-4 md:-inset-x-6 sm:rounded-2xl group-hover:bg-slate-50/70 dark:group-hover:bg-slate-800/50"></div> */}
                                         <svg viewBox="0 0 9 9" className="hidden absolute right-full mr-6 top-2 text-slate-200 dark:text-slate-600 md:mr-12 w-[calc(0.5rem+1px)] h-[calc(0.5rem+1px)] overflow-visible sm:block">

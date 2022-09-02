@@ -56,6 +56,7 @@ function AddBlog() {
     }
 
     const handlePublish = (e) => {
+
         e.preventDefault()
         const regexp = /^\S*$/;
         const { title, description } = formData;
