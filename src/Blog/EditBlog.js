@@ -1,11 +1,11 @@
-import { Timestamp, getDoc, doc, updateDoc } from 'firebase/firestore'
 import React, { useEffect, useState } from "react";
-import { storage, db, auth } from '../firebase';
-import { getDownloadURL, ref, uploadBytesResumable } from 'firebase/storage'
-import HeaderPage from '../UI/HeaderPage';
-import ToastJs from '../Components/ToastJs';
 import { useAuthState } from "react-firebase-hooks/auth";
 import { useNavigate, useParams } from "react-router-dom";
+import { Timestamp, getDoc, doc, updateDoc } from 'firebase/firestore'
+import { getDownloadURL, ref, uploadBytesResumable } from 'firebase/storage'
+import { storage, db, auth } from '../firebase';
+const HeaderPage = React.lazy(() => import('../UI/HeaderPage'));
+const ToastJs = React.lazy(() => import('../Components/ToastJs'));
 
 export default function Editblog() {
     const { id } = useParams()

@@ -1,10 +1,11 @@
-import { collection, deleteDoc, doc, onSnapshot, orderBy, query, where } from 'firebase/firestore'
 import React, { useEffect, useState } from 'react'
 import { useNavigate } from 'react-router-dom';
-import ToastJs from '../Components/ToastJs';
+import { collection, deleteDoc, doc, onSnapshot, orderBy, query } from 'firebase/firestore'
 import { auth, db } from '../firebase'
-import Modal from '../UI/Modal';
-import SearchBlog from './SearchBlog';
+
+const Modal = React.lazy(() => import('../UI/Modal'));
+const SearchBlog = React.lazy(() => import('./SearchBlog'));
+const ToastJs = React.lazy(() => import('../Components/ToastJs'));
 
 export default function Blogs() {
     const [id, setId] = useState()
@@ -151,9 +152,6 @@ export default function Blogs() {
                                             </dl>
                                         </div>
                                         <span className="flex items-center text-sm text-sky-500 font-medium">
-                                            {/* <span className="absolute -inset-y-2.5 -inset-x-4 md:-inset-y-4 md:-inset-x-6 sm:rounded-2xl"></span> */}
-                                            {/* <span className="relative">Read more<span className="sr-only">, Tailwind UI: Site templates and all-access</span>
-                                            </span> */}
                                             <svg className="relative mt-px overflow-visible ml-2.5 text-sky-300 dark:text-sky-700" width="3" height="6" viewBox="0 0 3 6" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M0 0L3 3L0 6"></path></svg>
                                         </span>
 

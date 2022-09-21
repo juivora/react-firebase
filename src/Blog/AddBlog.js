@@ -1,15 +1,13 @@
-import { collection, addDoc, Timestamp } from 'firebase/firestore'
-import React, { useDebugValue, useEffect, useState } from "react";
-import { storage, db, auth } from '../firebase';
-import { getDownloadURL, ref, uploadBytesResumable } from 'firebase/storage'
-import HeaderPage from '../UI/HeaderPage';
-import ToastJs from '../Components/ToastJs';
-import Modal from '../UI/Modal';
+import React, { useEffect, useState } from "react";
 import { useAuthState } from "react-firebase-hooks/auth";
 import { useNavigate } from "react-router-dom";
-import blogService from '../services/blog.service';
+import { collection, addDoc, Timestamp } from 'firebase/firestore'
+import { getDownloadURL, ref, uploadBytesResumable } from 'firebase/storage'
+import { storage, db, auth } from '../firebase';
 
-
+const Modal = React.lazy(() => import('../UI/Modal'));
+const HeaderPage = React.lazy(() => import('../UI/HeaderPage'));
+const ToastJs = React.lazy(() => import('../Components/ToastJs'));
 
 function AddBlog() {
     const [user, loading] = useAuthState(auth);
@@ -127,7 +125,6 @@ function AddBlog() {
                 <ToastJs show={showAlert} color={alertColor} message={alertMessage} />
                 <HeaderPage
                     heading="Add new blog"
-
                 />
                 <div className="rounded-md shadow-sm -space-y-px">
                     <div>
@@ -187,9 +184,7 @@ function AddBlog() {
                 focus:outline-none focus:ring-2 focus:ring-offset-2
                 focus:ring-teal-500" onClick={handlePublish}>Publish</button>
             </div>
-
-
-        </div>
+        </div >
     );
 }
 

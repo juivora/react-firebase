@@ -1,13 +1,13 @@
 import React, { useEffect, useState } from "react";
 import { useAuthState } from "react-firebase-hooks/auth";
 import { useNavigate } from "react-router-dom";
-// import "./Dashboard.css";
-import { auth, db, logout } from "../firebase"
 import { query, collection, getDocs, where } from "firebase/firestore";
-import Modal from "../UI/Modal";
+import { auth, db, logout } from "../firebase"
+
+const Modal = React.lazy(() => import('../UI/Modal'));
 
 function Dashboard() {
-    const [user, loading, error] = useAuthState(auth);
+    const [user, loading] = useAuthState(auth);
     const [name, setName] = useState("");
     const navigate = useNavigate();
     const fetchUserName = async () => {

@@ -1,11 +1,12 @@
-import { onAuthStateChanged } from 'firebase/auth';
-import { collection, deleteDoc, doc, onSnapshot, orderBy, query, where } from 'firebase/firestore'
 import React, { useEffect, useState } from 'react'
 import { useNavigate } from 'react-router-dom';
-import ToastJs from '../Components/ToastJs';
+import { onAuthStateChanged } from 'firebase/auth';
+import { collection, deleteDoc, doc, onSnapshot, orderBy, query, where } from 'firebase/firestore'
 import { auth, db } from '../firebase'
-import Modal from '../UI/Modal';
-import SearchBlog from './SearchBlog';
+
+const Modal = React.lazy(() => import('../UI/Modal'));
+const SearchBlog = React.lazy(() => import('./SearchBlog'));
+const ToastJs = React.lazy(() => import('../Components/ToastJs'));
 
 export default function MyBlogs() {
     const [id, setId] = useState()

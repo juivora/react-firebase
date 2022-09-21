@@ -1,15 +1,15 @@
-import { useNavigate } from "react-router-dom";
+
 import React, { useEffect, useState } from "react";
-
-import { auth, logInWithEmailAndPassword, signInWithGoogle } from '../../firebase'
+import { Link, useNavigate } from "react-router-dom";
 import { useAuthState } from "react-firebase-hooks/auth";
-import { LockClosedIcon } from '@heroicons/react/solid'
-import HeaderPage from "../../UI/HeaderPage";
-import ToastJs from "../../Components/ToastJs";
 import validator from 'validator';
+import { auth, logInWithEmailAndPassword, signInWithGoogle } from '../../firebase'
+import { LockClosedIcon } from '@heroicons/react/solid'
+// import Input from "../../UI/input";
 
-
-// import "./Login.css";
+const HeaderPage = React.lazy(() => import('../../UI/HeaderPage'));
+const ToastJs = React.lazy(() => import('../../Components/ToastJs'));
+const Input = React.lazy(() => import("../../UI/Input"));
 
 function Login() {
     const [email, setEmail] = useState("");
@@ -41,21 +41,7 @@ function Login() {
                 setAlertMessage('Please enter valid email')
                 return false
             } else {
-
-                let login = logInWithEmailAndPassword(email, password, setShowAlert, setAlertMessage)
-                console.log('login', login)
-
-                // login.then(err => {
-                //     console.log('err', err)
-                //     if (err === true) {
-                //         console.log('err', err)
-                //     } else {
-                //         setShowAlert(true)
-                //         setAlertColor('red')
-                //         setAlertMessage(err)
-                //     }
-                // })
-
+                logInWithEmailAndPassword(email, password, setShowAlert, setAlertMessage)
             }
 
         } else {
@@ -73,52 +59,35 @@ function Login() {
                 linkName="Signup"
                 linkUrl="/register"
             />
+
             <div className="min-h-full flex items-center justify-center px-4 sm:px-6 lg:px-8">
                 <div className="max-w-md w-full space-y-8">
+
                     <ToastJs show={showAlert} color={alertColor} message={alertMessage} />
+
                     <form className="mt-8 space-y-6" method="POST">
                         <input type="hidden" name="remember" defaultValue="true" />
                         <div className="rounded-md shadow-sm -space-y-px">
-                            <div>
-                                <label htmlFor="email-address" className="sr-only">
-                                    Email address
-                                </label>
-                                <input
-                                    id="email-address"
-                                    name="email"
-                                    type="email"
-                                    autoComplete="email"
-                                    // required
-                                    className="appearance-none rounded-none relative block
-                                                w-full px-3 py-2 border border-gray-300
-                                                placeholder-gray-500 text-gray-900 rounded-t-md
-                                                focus:outline-none focus:ring-teal-500
-                                                focus:border-teal-500 focus:z-10 sm:text-sm"
-                                    placeholder="Email address"
-                                    value={email}
-                                    onChange={(e) => setEmail(e.target.value)}
-                                />
-                            </div>
-                            <div>
-                                <label htmlFor="password" className="sr-only">
-                                    Password
-                                </label>
-                                <input
-                                    id="password"
-                                    name="password"
-                                    type="password"
-                                    autoComplete="current-password"
-                                    // required
-                                    className="appearance-none rounded-none relative block
-                  w-full px-3 py-2 border border-gray-300
-                  placeholder-gray-500 text-gray-900 rounded-b-md
-                  focus:outline-none focus:ring-teal-500
-                  focus:border-teal-500 focus:z-10 sm:text-sm"
-                                    placeholder="Password"
-                                    value={password}
-                                    onChange={(e) => setPassword(e.target.value)}
-                                />
-                            </div>
+                            <Input id={"email-address"} label="Email address" value={email}
+                                name={"email"} type="email"
+                                classes="appearance-none rounded-none relative block
+                                w-full px-3 py-2 border border-gray-300
+                                placeholder-gray-500 text-gray-900 rounded-t-md
+                                focus:outline-none focus:ring-teal-500
+                                focus:border-teal-500 focus:z-10 sm:text-sm"
+                                isRequired={true}
+                                handleChange={(e) => setEmail(e.target.value)}
+                            />
+                            <Input id={"password"} label="Password" value={password}
+                                name={"password"} type="password"
+                                classes="appearance-none rounded-none relative block
+                                w-full px-3 py-2 border border-gray-300
+                                placeholder-gray-500 text-gray-900 rounded-t-md
+                                focus:outline-none focus:ring-teal-500
+                                focus:border-teal-500 focus:z-10 sm:text-sm"
+                                isRequired={true}
+                                handleChange={(e) => setPassword(e.target.value)}
+                            />
                         </div>
 
                         <div className="flex items-center justify-between">
@@ -128,7 +97,7 @@ function Login() {
                                     name="remember-me"
                                     type="checkbox"
                                     className="h-4 w-4 text-teal-600 focus:ring-teal-500
-                  border-gray-300 rounded"
+                                    border-gray-300 rounded"
                                 />
                                 <label htmlFor="remember-me" className="ml-2 block text-sm text-gray-900">
                                     Remember me
@@ -136,9 +105,13 @@ function Login() {
                             </div>
 
                             <div className="text-sm">
-                                <a href="/reset" className="font-medium text-teal-600 hover:text-teal-500">
+                                {/* <Link className="font-medium text-teal-600 hover:text-teal-500">
                                     Forgot your password?
-                                </a>
+                                </Link> */}
+                                <Link to="/reset" className="font-medium text-teal-600 hover:text-teal-500">
+                                    Forgot your password?
+                                </Link>
+
                             </div>
                         </div>
 
@@ -164,10 +137,10 @@ function Login() {
                             <button
                                 type="button"
                                 className="group relative w-full flex justify-center
-                py-2 px-4 border border-transparent text-sm font-medium
-                rounded-md text-white bg-teal-600 hover:bg-teal-700
-                focus:outline-none focus:ring-2 focus:ring-offset-2
-                focus:ring-teal-500"
+                                    py-2 px-4 border border-transparent text-sm font-medium
+                                    rounded-md text-white bg-teal-600 hover:bg-teal-700
+                                    focus:outline-none focus:ring-2 focus:ring-offset-2
+                                    focus:ring-teal-500"
                                 onClick={signInWithGoogle}
                                 data-testid="googleSubmit"
                             >
@@ -180,8 +153,8 @@ function Login() {
                         </div>
                     </form>
 
-                </div>
-            </div>
+                </div >
+            </div >
         </>
     );
 }
